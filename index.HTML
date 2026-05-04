@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CNC Laser | Precision Engineering</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Explore the CNC 3018 Laser project - a masterpiece of precision engineering, GRBL control, and dual-mode fabrication.">
+    <meta name="keywords" content="CNC Laser, CNC 3018, Precision Engraving, GRBL, Desktop Fabrication">
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Orbitron:wght@400;700;900&family=Syne:wght@700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS (for utility layouts) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --primary: #ef4444;
+            --primary-glow: rgba(239, 68, 68, 0.5);
+            --accent: #f97316;
+            --bg-dark: #030712;
+            --glass: rgba(13, 17, 23, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-white: #ffffff;
+            --text-gray: #94a3b8;
+            --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: default;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-white);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) transparent;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1f2937;
+            border-radius: 10px;
+            border: 2px solid var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        /* Liquid Glass Background */
+        .bg-blobs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            filter: blur(100px);
+            opacity: 0.5;
+        }
+
+        .blob {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            animation: drift 20s infinite alternate ease-in-out;
+        }
+
+        .blob-1 {
+            background: var(--primary);
+            top: -10%;
+            right: -10%;
+            animation-duration: 25s;
+        }
+
+        .blob-2 {
+            background: var(--accent);
+            bottom: -10%;
+            left: -10%;
+            animation-duration: 30s;
+            animation-delay: -5s;
+        }
+
+        @keyframes drift {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(100px, 50px) scale(1.2);
+            }
+        }
+
+        /* --- Navbar --- */
+        .navbar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 1200px;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 40px;
+            transition: var(--transition);
+        }
+
+        .navbar.scrolled {
+            top: 10px;
+            height: 60px;
+            background: rgba(13, 17, 23, 0.8);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: white;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 20px;
+            letter-spacing: 1px;
+        }
+
+        .nav-logo img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-gray);
+            font-weight: 600;
+            font-size: 15px;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-btn {
+            background: var(--primary);
+            color: white !important;
+            padding: 10px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            box-shadow: 0 10px 20px var(--primary-glow);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px var(--primary-glow);
+        }
+
+        .nav-group:hover {
+            color: var(--primary) !important;
+            text-shadow: 0 0 20px var(--primary);
+            transform: scale(1.05);
+            animation: pulse-red 2s infinite alternate;
+        }
+
+        @keyframes pulse-red {
+            from { text-shadow: 0 0 10px var(--primary-glow); }
+            to { text-shadow: 0 0 20px var(--primary); }
+        }
+
+
+
+        /* Mobile Toggle */
+        .menu-toggle {
+            display: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            height: 100vh;
+            background: rgba(3, 7, 18, 0.98);
+            backdrop-filter: blur(20px);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .mobile-menu.active {
+            right: 0;
+        }
+
+        .mobile-menu-links {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            text-align: center;
+        }
+
+        .mobile-menu-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 28px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            letter-spacing: 2px;
+            transition: var(--transition);
+        }
+
+        .mobile-menu-links a:hover {
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .mobile-menu-close {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            color: white;
+            font-size: 32px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .mobile-menu-close:hover {
+            color: var(--primary);
+            transform: rotate(90deg);
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding-top: 80px;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .hero-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.3) saturate(1.2);
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 10;
+            max-width: 900px;
+            padding: 0 20px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 8px 16px;
+            border-radius: 50px;
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .hero h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(48px, 10vw, 100px);
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 20px;
+            background: linear-gradient(to bottom, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -2px;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .hero p {
+            font-size: clamp(16px, 2vw, 20px);
+            color: var(--text-gray);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        /* --- Sections --- */
+        .section {
+            padding: 80px 20px;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(40px) saturate(200%);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px;
+            padding: 60px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(239, 68, 68, 0.3);
+            box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.5);
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 40px;
+            height: 2px;
+            background: var(--primary);
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        /* --- Feature Grid --- */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            padding: 40px;
+            border-radius: 30px;
+            transition: var(--transition);
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(239, 68, 68, 0.05);
+            border-color: var(--primary);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 25px;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover .feature-icon {
+            background: var(--primary);
+            color: white;
+            transform: rotate(10deg);
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 1024px) {
+            .navbar { width: 95%; padding: 0 20px; }
+            .section { padding: 60px 15px; }
+            .glass-card { padding: 40px; }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0 15px;
+                height: 60px;
+                top: 10px;
+            }
+
+            .nav-logo {
+                font-size: 18px;
+                gap: 8px;
+            }
+
+            .nav-logo img {
+                width: 28px;
+                height: 28px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .menu-toggle {
+                display: block;
+                margin-left: auto;
+            }
+
+            .nav-group {
+                display: none; /* Hide team group on small mobiles to save space */
+            }
+
+            .hero h1 {
+                font-size: clamp(40px, 15vw, 70px);
+                letter-spacing: -1px;
+            }
+
+            .hero p {
+                font-size: 16px;
+                margin-bottom: 30px;
+            }
+
+            .glass-card {
+                padding: 30px 20px;
+                border-radius: 30px;
+            }
+
+            .section {
+                padding: 40px 10px;
+            }
+
+            .section-title {
+                font-size: 26px;
+                gap: 12px;
+            }
+
+            .section-title::before {
+                width: 30px;
+            }
+            
+            /* Stack team assets */
+            .team-assets {
+                flex-direction: row;
+                justify-content: center;
+                gap: 15px;
+                width: 100%;
+            }
+            
+            .team-assets img {
+                height: 100px !important;
+            }
+
+            .grid-cols-3 {
+                grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+            }
+
+            .w-48.h-48 {
+                width: 160px;
+                height: 160px;
+            }
+
+            .p-12 {
+                padding: 24px !important;
+            }
+
+            .text-3xl {
+                font-size: 24px !important;
+            }
+
+            .text-xl {
+                font-size: 18px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-badge {
+                font-size: 10px;
+                padding: 6px 12px;
+            }
+            
+            .nav-logo {
+                font-size: 16px;
+            }
+
+            .team-assets img {
+                height: 80px !important;
+            }
+
+            .hero h1 {
+                font-size: 48px;
+            }
+
+            .section-title {
+                font-size: 22px;
+            }
+
+            .mobile-compact {
+                padding: 16px !important;
+                gap: 12px !important;
+            }
+
+            .mobile-text-sm {
+                font-size: 14px !important;
+            }
+        }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <a href="#" class="nav-logo">
+            <span>CNC Laser</span>
+            <span class="nav-group" style="margin-left: 15px; padding-left: 15px; border-left: 1px solid var(--glass-border); color: var(--text-gray); font-size: 14px; letter-spacing: 2px; font-weight: 800; transition: var(--transition);">GROUP - 10</span>
+        </a>
+
+
+
+        <div class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-close" id="mobileMenuClose">
+            <i class="fas fa-times"></i>
+        </div>
+        <div class="mobile-menu-links">
+            <a href="#overview">Overview</a>
+            <a href="#supervision">Supervision</a>
+            <a href="#team">Team</a>
+            <a href="#specs">Specs</a>
+            <a href="#components">Components</a>
+            <a href="#working-principle">Process</a>
+            <a href="#benefits">Benefits</a>
+            <a href="#products">Products</a>
+            <a href="#safety">Safety</a>
+        </div>
+    </div>
+
+
+    <!-- Hero -->
+    <header class="hero">
+        <div class="hero-bg">
+            <img src="CNC Detail.jpg" alt="CNC Machine">
+        </div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i class="fas fa-bolt"></i> Precision Engineered
+            </div>
+            <h1>CNC <span style="color: var(--primary);">LASER</span></h1>
+
+
+        </div>
+    </header>
+
+    <!-- Supervision Section -->
+    <section id="supervision" class="section">
+        <div class="glass-card reveal">
+            <h2 class="section-title">Under the Supervision of</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center group">
+                    <div class="w-48 h-48 mx-auto rounded-full overflow-hidden border-4 border-red-500/20 mb-6 group-hover:border-red-500 transition-all duration-500 transform group-hover:scale-105">
+                        <img src="prof. Meawad ElKholy.jpg" alt="Prof. Meawad ElKholy" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-xl font-bold">Prof. Meawad ElKholy</h3>
+                    <p class="text-red-500 font-bold tracking-widest uppercase text-[10px] mt-2">University President</p>
+                </div>
+                <div class="text-center group">
+                    <div class="w-48 h-48 mx-auto rounded-full overflow-hidden border-4 border-red-500/20 mb-6 group-hover:border-red-500 transition-all duration-500 transform group-hover:scale-105">
+                        <img src="prof. Wael seddik.jpg" alt="Prof. Wael Seddik" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-xl font-bold">Prof. Wael Seddik</h3>
+                    <p class="text-red-500 font-bold tracking-widest uppercase text-[10px] mt-2">Faculty Dean</p>
+                </div>
+                <div class="text-center group">
+                    <div class="w-48 h-48 mx-auto rounded-full overflow-hidden border-4 border-red-500/20 mb-6 group-hover:border-red-500 transition-all duration-500 transform group-hover:scale-105">
+                        <img src="prof. Sara Al-Bahloul.jpg" alt="Prof. Sara Al-Bahloul" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-xl font-bold">Prof. Sara Al-Bahloul</h3>
+                    <p class="text-red-500 font-bold tracking-widest uppercase text-[10px] mt-2">Program Director</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Leaders -->
+    <section id="team" class="section">
+        <div class="glass-card reveal">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-12 gap-6">
+                <h2 class="section-title" style="margin-bottom: 0;">Team Leaders</h2>
+                <div class="flex flex-wrap gap-6 items-center justify-center team-assets">
+                    <img src="1.png" alt="Asset 1"
+                        class="h-[120px] md:h-[200px] w-auto object-contain opacity-80 hover:opacity-100 transition-all duration-500 hover:scale-110">
+                    <img src="2.png" alt="Asset 2"
+                        class="h-[120px] md:h-[200px] w-auto object-contain opacity-80 hover:opacity-100 transition-all duration-500 hover:scale-110">
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div
+                    class="text-center p-12 rounded-[40px] bg-white/5 border border-white/10 hover:border-red-500/50 transition-all group">
+                    <div
+                        class="w-[200px] h-[200px] mx-auto rounded-full overflow-hidden border-4 border-red-500/20 mb-8 group-hover:border-red-500 transition-all duration-500 transform group-hover:scale-105">
+                        <img src="Mohamed Alsaid.webp" alt="Mohamed Alsaid" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-3xl font-bold mb-2">Mohamed Alsaid</h3>
+                    <p class="text-red-500 font-bold tracking-widest uppercase text-xs mb-6">Team Leader</p>
+                </div>
+                <div
+                    class="text-center p-12 rounded-[40px] bg-white/5 border border-white/10 hover:border-red-500/50 transition-all group">
+                    <div
+                        class="w-[200px] h-[200px] mx-auto rounded-full overflow-hidden border-4 border-red-500/20 mb-8 group-hover:border-red-500 transition-all duration-500 transform group-hover:scale-105">
+                        <img src="Mohamed Ayman.jpg" alt="Mohamed Ayman" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-3xl font-bold mb-2">Mohamed Ayman</h3>
+                    <p class="text-red-500 font-bold tracking-widest uppercase text-xs mb-6">Team Leader</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main>
+        <!-- Overview -->
+        <section id="overview" class="section">
+            <div class="glass-card reveal">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h2 class="section-title">Project Vision</h2>
+                        <p class="text-lg text-slate-300 leading-relaxed">
+                            CNC Laser 3018 is a compact desktop machine used for engraving and cutting lightweight
+                            materials using a laser beam controlled by computer systems. It provides high precision and
+                            is widely used in small-scale manufacturing and educational applications.
+                        </p>
+                    </div>
+                    <div class="rounded-3xl overflow-hidden border border-white/10 group">
+                        <img src="CNC Detail.jpg" alt="CNC Detail"
+                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <!-- Specs Table -->
+        <section id="specs" class="section">
+            <div class="glass-card reveal">
+                <h2 class="section-title">Machine Specifications</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-white/10">
+                                <th class="py-4 font-bold text-red-400">Parameter</th>
+                                <th class="py-4 font-bold text-red-400">Specification</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-slate-300">
+                            <tr class="border-b border-white/5">
+                                <td class="py-4">Effective Work Area</td>
+                                <td class="py-4">300 x 180 x 45 mm</td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="py-4">Laser Power</td>
+                                <td class="py-4">2.5W – 5.5W</td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="py-4">Power Supply</td>
+                                <td class="py-4">12V</td>
+                            </tr>
+                            <tr class="border-b border-white/5">
+                                <td class="py-4">Accuracy</td>
+                                <td class="py-4">±0.1 mm</td>
+                            </tr>
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        <!-- Main Components -->
+        <section id="components" class="section">
+            <div class="glass-card reveal">
+                <h2 class="section-title">Main Components</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <!-- Aluminum Frame -->
+                    <div
+                        class="rounded-[40px] bg-white/5 border border-white/10 hover:border-red-500/50 transition-all group overflow-hidden">
+                        <div class="h-64 sm:h-96 overflow-hidden">
+                            <img src="Aluminum Frame.jpg" alt="Aluminum Frame"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="p-12">
+                            <h3 class="text-3xl font-bold mb-6">Aluminum Frame</h3>
+                            <p class="text-xl text-slate-400 leading-relaxed">
+                                A high-strength structural skeleton made from precision-machined aluminum extrusions for
+                                maximum rigidity and vibration damping.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Stepper Motors -->
+                    <div
+                        class="rounded-[40px] bg-white/5 border border-white/10 hover:border-red-500/50 transition-all group overflow-hidden">
+                        <div class="h-64 sm:h-96 overflow-hidden">
+                            <img src="Stepper Motors (NEMA 17).jpg" alt="Stepper Motors"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="p-12">
+                            <h3 class="text-3xl font-bold mb-6">Stepper Motors (NEMA 17)</h3>
+                            <p class="text-xl text-slate-400 leading-relaxed">
+                                NEMA 17 motors providing high-torque, precise motion control along the X, Y, and Z axes
+                                for complex fabrication paths.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Laser Module -->
+                    <div
+                        class="rounded-[40px] bg-white/5 border border-white/10 hover:border-red-500/50 transition-all group overflow-hidden">
+                        <div class="h-64 sm:h-96 overflow-hidden">
+                            <img src="Laser Module.jpg" alt="Laser Module"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="p-12">
+                            <h3 class="text-3xl font-bold mb-6">Laser Module</h3>
+                            <p class="text-xl text-slate-400 leading-relaxed">
+                                A high-density light source used for focused cutting and high-precision surface
+                                engraving on various materials.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Controller Board -->
+                    <div
+                        class="rounded-[40px] bg-white/5 border border-white/10 hover:border-red-500/50 transition-all group overflow-hidden">
+                        <div class="h-64 sm:h-96 overflow-hidden">
+                            <img src="ESP MSK DLC32 V2.1.jpg" alt="Controller Board"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="p-12">
+                            <h3 class="text-3xl font-bold mb-6">ESP MSK DLC32 V2.1</h3>
+                            <p class="text-xl text-slate-400 leading-relaxed">
+                                A powerful 32-bit controller board optimized for high-speed motion, stable GRBL firmware
+                                execution, and WiFi connectivity.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Working Principle -->
+        <section id="working-principle" class="section">
+            <div class="glass-card reveal">
+                <h2 class="section-title">Working Principle</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                    <div class="space-y-12">
+                        <div class="flex gap-8 group">
+                            <div
+                                class="flex-shrink-0 w-16 h-16 rounded-2xl bg-red-500/10 flex items-center justify-center text-red-500 font-black text-2xl border border-red-500/20 group-hover:bg-red-500 group-hover:text-white transition-all">
+                                1</div>
+                            <div>
+                                <h3 class="text-2xl font-bold mb-3">Digital Design</h3>
+                                <p class="text-slate-400 leading-relaxed">Designs are created in software like LaserGRBL
+                                    or LightBurn and converted into G-code—a language the machine understands.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-8 group">
+                            <div
+                                class="flex-shrink-0 w-16 h-16 rounded-2xl bg-red-500/10 flex items-center justify-center text-red-500 font-black text-2xl border border-red-500/20 group-hover:bg-red-500 group-hover:text-white transition-all">
+                                2</div>
+                            <div>
+                                <h3 class="text-2xl font-bold mb-3">Signal Processing</h3>
+                                <p class="text-slate-400 leading-relaxed">The 32-bit controller board processes the
+                                    G-code and sends precise electrical pulses to the stepper motor drivers.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-8 group">
+                            <div
+                                class="flex-shrink-0 w-16 h-16 rounded-2xl bg-red-500/10 flex items-center justify-center text-red-500 font-black text-2xl border border-red-500/20 group-hover:bg-red-500 group-hover:text-white transition-all">
+                                3</div>
+                            <div>
+                                <h3 class="text-2xl font-bold mb-3">Precision Execution</h3>
+                                <p class="text-slate-400 leading-relaxed">The motors move the laser head along the X and
+                                    Y axes while the laser intensity is modulated to engrave or cut the material.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <div class="rounded-[40px] overflow-hidden border border-white/10 shadow-2xl">
+                            <img src="G - Code.png" alt="G-Code Illustration" class="w-full h-full object-cover">
+                        </div>
+                        <!-- Decorative element -->
+                        <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-red-500/20 blur-3xl -z-10"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Electrical System -->
+        <section id="electrical" class="section">
+            <div class="glass-card reveal">
+                <h2 class="section-title">Electrical System</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div class="order-2 md:order-1">
+                        <p class="text-lg md:text-xl text-slate-300 mb-8 leading-relaxed">
+                            The machine depends on advanced electrical systems to ensure precision and safety during
+                            operation:
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+                            <div
+                                class="flex items-center gap-4 p-4 md:p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/50 transition-all mobile-compact">
+                                <div
+                                    class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-red-500/10 flex items-center justify-center text-red-500">
+                                    <i class="fas fa-bolt-lightning text-lg md:text-xl"></i>
+                                </div>
+                                <span class="text-slate-300 font-medium mobile-text-sm">Power Supply Distribution</span>
+                            </div>
+                            <div
+                                class="flex items-center gap-4 p-4 md:p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/50 transition-all mobile-compact">
+                                <div
+                                    class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-red-500/10 flex items-center justify-center text-red-500">
+                                    <i class="fas fa-microchip text-lg md:text-xl"></i>
+                                </div>
+                                <span class="text-slate-300 font-medium mobile-text-sm">Stepper Motor Drivers</span>
+                            </div>
+                            <div
+                                class="flex items-center gap-4 p-4 md:p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/50 transition-all mobile-compact">
+                                <div
+                                    class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-red-500/10 flex items-center justify-center text-red-500">
+                                    <i class="fas fa-wave-square text-lg md:text-xl"></i>
+                                </div>
+                                <span class="text-slate-300 font-medium mobile-text-sm">PWM Laser Control</span>
+                            </div>
+                            <div
+                                class="flex items-center gap-4 p-4 md:p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/50 transition-all mobile-compact">
+                                <div
+                                    class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-red-500/10 flex items-center justify-center text-red-500">
+                                    <i class="fas fa-shield-halved text-lg md:text-xl"></i>
+                                </div>
+                                <span class="text-slate-300 font-medium mobile-text-sm">Circuit Protection Systems</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rounded-[30px] md:rounded-[40px] overflow-hidden border border-white/10 shadow-2xl order-1 md:order-2 mb-8 md:mb-0">
+                        <img src="ESP MSK DLC32 V2.1.jpg" alt="Electrical Control Board"
+                            class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Integrated Benefits Section -->
+        <section id="benefits" class="section">
+            <div class="glass-card reveal">
+                <h2 class="section-title">Multidisciplinary Benefits</h2>
+                <p class="text-xl text-slate-400 mb-16 max-w-3xl">
+                    The CNC Laser 3018 serves as a versatile platform, providing specialized advantages across various
+                    engineering fields by bridging the gap between digital design and physical fabrication.
+                </p>
+
+                <!-- Electrical Engineering Benefits -->
+                <div class="mb-16">
+                    <h3 class="text-2xl font-bold text-red-500 mb-8 flex items-center gap-4">
+                        <span class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center text-lg"><i
+                                class="fas fa-bolt"></i></span>
+                        Electrical Engineering
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div
+                            class="p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/30 transition-all group mobile-compact">
+                            <h4 class="font-bold mb-3 group-hover:text-red-400 transition-colors text-sm md:text-base">PCB Manufacturing</h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">Rapid prototyping of custom circuit boards
+                                through precision laser engraving and milling.</p>
+                        </div>
+                        <div
+                            class="p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/30 transition-all group mobile-compact">
+                            <h4 class="font-bold mb-3 group-hover:text-red-400 transition-colors text-sm md:text-base">Renewable Energy</h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">Design and fabrication of specialized
+                                components for solar and wind energy research.</p>
+                        </div>
+                        <div
+                            class="p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/30 transition-all group mobile-compact">
+                            <h4 class="font-bold mb-3 group-hover:text-red-400 transition-colors text-sm md:text-base">Automation Training
+                            </h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">Hands-on experience with stepper drivers,
+                                limit switches, and synchronized motion control.</p>
+                        </div>
+                        <div
+                            class="p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/30 transition-all group mobile-compact">
+                            <h4 class="font-bold mb-3 group-hover:text-red-400 transition-colors text-sm md:text-base">Control Systems</h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">Real-world application of PID loops, PWM
+                                signaling, and G-code interpretation logic.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mechatronics Engineering Benefits -->
+                <div class="mb-16">
+                    <h3 class="text-2xl font-bold text-red-500 mb-8 flex items-center gap-4">
+                        <span class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center text-lg"><i
+                                class="fas fa-robot"></i></span>
+                        Mechatronics Engineering
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div
+                            class="p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/30 transition-all group mobile-compact">
+                            <h4 class="font-bold mb-3 group-hover:text-red-400 transition-colors text-sm md:text-base">Rapid Prototyping</h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">Fastest way to turn CAD designs into
+                                physical robot chassis, gears, and mechanical links.</p>
+                        </div>
+                        <div
+                            class="p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/30 transition-all group mobile-compact">
+                            <h4 class="font-bold mb-3 group-hover:text-red-400 transition-colors text-sm md:text-base">Motion Control Mastery
+                            </h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">Direct application of automation, learning
+                                how controllers coordinate complex axis movement.</p>
+                        </div>
+                        <div
+                            class="p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/30 transition-all group mobile-compact">
+                            <h4 class="font-bold mb-3 group-hover:text-red-400 transition-colors text-sm md:text-base">Hardware-Software
+                                Integration</h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">Experience linking G-Code with firmware
+                                like GRBL to control real-time operations.</p>
+                        </div>
+                        <div
+                            class="p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/30 transition-all group mobile-compact">
+                            <h4 class="font-bold mb-3 group-hover:text-red-400 transition-colors text-sm md:text-base">Electronics
+                                Fabrication</h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">Simplifies creating custom PCBs and
+                                precise enclosures, bridging the gap to mechanical structures.</p>
+                        </div>
+                        <div
+                            class="p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/30 transition-all group mobile-compact">
+                            <h4 class="font-bold mb-3 group-hover:text-red-400 transition-colors text-sm md:text-base">System Synergy</h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">Teaches balancing mechanical rigidity,
+                                electronic wiring, and software logic for holistic systems.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aerospace Engineering Benefits -->
+                <div class="mb-16">
+                    <h3 class="text-2xl font-bold text-red-500 mb-8 flex items-center gap-4">
+                        <span class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center text-lg"><i
+                                class="fas fa-plane"></i></span>
+                        Aerospace Engineering
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div
+                            class="p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/30 transition-all group mobile-compact">
+                            <h4 class="font-bold mb-3 group-hover:text-red-400 transition-colors text-sm md:text-base">Structural Prototyping
+                            </h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">Ideal for cutting intricate, lightweight
+                                wing ribs and spars from Balsa, plywood, or composites.</p>
+                        </div>
+                        <div
+                            class="p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/30 transition-all group mobile-compact">
+                            <h4 class="font-bold mb-3 group-hover:text-red-400 transition-colors text-sm md:text-base">Aerodynamic Testing
+                            </h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">Quickly fabricate scaled models for Wind
+                                Tunnel testing with high dimensional accuracy.</p>
+                        </div>
+                        <div
+                            class="p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/30 transition-all group mobile-compact">
+                            <h4 class="font-bold mb-3 group-hover:text-red-400 transition-colors text-sm md:text-base">Precision Components
+                            </h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">Creating custom brackets and engine mounts
+                                where weight and precision are mission-critical.</p>
+                        </div>
+                        <div
+                            class="p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/30 transition-all group mobile-compact">
+                            <h4 class="font-bold mb-3 group-hover:text-red-400 transition-colors text-sm md:text-base">Complex Geometry</h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">Easily cut "lightening holes" and complex
+                                patterns to optimize strength-to-weight ratios.</p>
+                        </div>
+                        <div
+                            class="p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/30 transition-all group mobile-compact">
+                            <h4 class="font-bold mb-3 group-hover:text-red-400 transition-colors text-sm md:text-base">Material Versatility
+                            </h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">Capability to work with aerospace plastics
+                                and thin alloys for interior and instrument panels.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Petroleum & Gas Engineering Benefits -->
+                <div class="mb-16">
+                    <h3 class="text-2xl font-bold text-red-500 mb-8 flex items-center gap-4">
+                        <span class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center text-lg"><i
+                                class="fas fa-oil-can"></i></span>
+                        Petroleum & Gas Engineering
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div
+                            class="p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/30 transition-all group mobile-compact">
+                            <h4 class="font-bold mb-3 group-hover:text-red-400 transition-colors text-sm md:text-base">Scale Modeling of
+                                Drilling Rigs</h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">Building highly detailed scale models of
+                                offshore platforms and drilling rigs for safety training and structural analysis.</p>
+                        </div>
+                        <div
+                            class="p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/30 transition-all group mobile-compact">
+                            <h4 class="font-bold mb-3 group-hover:text-red-400 transition-colors text-sm md:text-base">Custom Gaskets & Seals
+                            </h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">Precise cutting of specialized rubber or
+                                polymer gaskets used in piping and valves to prevent leaks under high pressure.</p>
+                        </div>
+                        <div
+                            class="p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/30 transition-all group mobile-compact">
+                            <h4 class="font-bold mb-3 group-hover:text-red-400 transition-colors text-sm md:text-base">Flow Visualization
+                                Tools</h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">Fabricating acrylic "Transparent
+                                Manifolds" or pipe sections to observe fluid flow patterns and turbulence in a lab
+                                setting.</p>
+                        </div>
+                        <div
+                            class="p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/30 transition-all group mobile-compact">
+                            <h4 class="font-bold mb-3 group-hover:text-red-400 transition-colors text-sm md:text-base">Identification &
+                                Tagging</h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">Permanent laser engraving on metal tags
+                                and equipment (valves, pipes, tools) to withstand harsh oilfield environments.</p>
+                        </div>
+                        <div
+                            class="p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/30 transition-all group mobile-compact">
+                            <h4 class="font-bold mb-3 group-hover:text-red-400 transition-colors text-sm md:text-base">Prototyping Downhole
+                                Tools</h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">Creating quick prototypes of drill bit
+                                designs or filtration screens to test geometry before moving to manufacturing.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Biomedical Engineering Benefits -->
+                <div>
+                    <h3 class="text-2xl font-bold text-red-500 mb-8 flex items-center gap-4">
+                        <span class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center text-lg"><i
+                                class="fas fa-microscope"></i></span>
+                        Biomedical Engineering
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div
+                            class="p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/30 transition-all group mobile-compact">
+                            <h4 class="font-bold mb-3 group-hover:text-red-400 transition-colors text-sm md:text-base">Micro-Fluidic Devices
+                            </h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">Precisely etching micro-channels in
+                                acrylic or glass to create chips that can analyze blood samples or cells in seconds.</p>
+                        </div>
+                        <div
+                            class="p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/30 transition-all group mobile-compact">
+                            <h4 class="font-bold mb-3 group-hover:text-red-400 transition-colors text-sm md:text-base">Custom Prosthetics &
+                                Orthotics</h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">Cutting and engraving personalized
+                                structural components for artificial limbs, ensuring a perfect fit for the patient's
+                                anatomy.</p>
+                        </div>
+                        <div
+                            class="p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/30 transition-all group mobile-compact">
+                            <h4 class="font-bold mb-3 group-hover:text-red-400 transition-colors text-sm md:text-base">Surgical
+                                Instrumentation</h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">Fabricating specialized surgical templates
+                                and guides that help surgeons cut or drill with extreme precision.</p>
+                        </div>
+                        <div
+                            class="p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/30 transition-all group mobile-compact">
+                            <h4 class="font-bold mb-3 group-hover:text-red-400 transition-colors text-sm md:text-base">Medical Grade Stencils
+                            </h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">Creating high-precision masks for
+                                depositing biomaterials or drugs onto stents and other implantable devices.</p>
+                        </div>
+                        <div
+                            class="p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/30 transition-all group mobile-compact">
+                            <h4 class="font-bold mb-3 group-hover:text-red-400 transition-colors text-sm md:text-base">Biocompatible Material
+                                Processing</h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">Working with medical-grade plastics and
+                                titanium foils to create implants or protective housings for internal electronics.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Products Section -->
+        <section id="products" class="section">
+            <div class="glass-card reveal">
+                <h2 class="section-title">Created Products</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+                    <div class="rounded-[40px] overflow-hidden border border-white/10 shadow-2xl group">
+                        <img src="CNC Products Showcase.jpg" alt="CNC Products Showcase"
+                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    </div>
+                    <div class="space-y-8">
+                        <h3 class="text-3xl font-bold text-white">Precision Fabricated Items</h3>
+                        <p class="text-xl text-slate-400 leading-relaxed">
+                            The CNC Laser 3018 transforms digital concepts into physical reality with extreme precision
+                            across a wide range of materials.
+                        </p>
+
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="aspect-square rounded-3xl overflow-hidden border border-white/10 group shadow-xl">
+                        <img src="3.png" alt="Product 3" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    </div>
+                    <div class="aspect-square rounded-3xl overflow-hidden border border-white/10 group shadow-xl">
+                        <img src="4.png" alt="Product 4" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    </div>
+                    <div class="aspect-square rounded-3xl overflow-hidden border border-white/10 group shadow-xl">
+                        <img src="5.png" alt="Product 5" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    </div>
+
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Safety Measures -->
+        <section id="safety" class="section">
+            <div class="glass-card reveal">
+                <h2 class="section-title">Safety Measures</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div
+                        class="flex items-center gap-5 p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500 transition-all group mobile-compact">
+                        <div
+                            class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-red-500/20 flex items-center justify-center text-red-500 group-hover:bg-red-500 group-hover:text-white transition-all">
+                            <i class="fas fa-glasses"></i>
+                        </div>
+                        <span class="text-slate-200 font-bold mobile-text-sm">Wear protective glasses</span>
+                    </div>
+                    <div
+                        class="flex items-center gap-5 p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500 transition-all group mobile-compact">
+                        <div
+                            class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-red-500/20 flex items-center justify-center text-red-500 group-hover:bg-red-500 group-hover:text-white transition-all">
+                            <i class="fas fa-wind"></i>
+                        </div>
+                        <span class="text-slate-200 font-bold mobile-text-sm">Ensure ventilation</span>
+                    </div>
+                    <div
+                        class="flex items-center gap-5 p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500 transition-all group mobile-compact">
+                        <div
+                            class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-red-500/20 flex items-center justify-center text-red-500 group-hover:bg-red-500 group-hover:text-white transition-all">
+                            <i class="fas fa-eye-slash"></i>
+                        </div>
+                        <span class="text-slate-200 font-bold mobile-text-sm">Avoid direct laser exposure</span>
+                    </div>
+                    <div
+                        class="flex items-center gap-5 p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500 transition-all group mobile-compact">
+                        <div
+                            class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-red-500/20 flex items-center justify-center text-red-500 group-hover:bg-red-500 group-hover:text-white transition-all">
+                            <i class="fas fa-hand-pointer"></i>
+                        </div>
+                        <span class="text-slate-200 font-bold mobile-text-sm">Use emergency stop</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Thank You Section -->
+        <section class="section text-center" style="padding-top: 40px; padding-bottom: 80px;">
+            <h2 id="thankYou" class="text-4xl md:text-6xl font-black cursor-pointer hover:text-red-500 transition-all duration-300 transform hover:scale-110 active:scale-95 inline-block">
+                Thank You! ❤️
+            </h2>
+            <div id="emojiContainer" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999;"></div>
+        </section>
+    </main>
+
+    <footer class="py-20 text-center border-t border-white/5">
+        <p class="text-slate-500 text-sm">&copy; 2026 by Mohamed Alsaid Elhefnawy</p>
+    </footer>
+
+    <script>
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Reveal Animations
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        window.addEventListener("load", reveal);
+
+        // Mobile Menu Logic
+        const menuToggle = document.querySelector('.menu-toggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuClose = document.getElementById('mobileMenuClose');
+        const mobileMenuLinks = document.querySelectorAll('.mobile-menu-links a');
+
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        const closeMenu = () => {
+            mobileMenu.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        };
+
+        mobileMenuClose.addEventListener('click', closeMenu);
+        mobileMenuLinks.forEach(link => link.addEventListener('click', closeMenu));
+
+        // Thank You Emoji Effect
+        const thankYou = document.getElementById('thankYou');
+        const emojiContainer = document.getElementById('emojiContainer');
+        const emojis = ['❤️'];
+
+        thankYou.addEventListener('click', (e) => {
+            for (let i = 0; i < 30; i++) {
+                const emoji = document.createElement('div');
+                emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                emoji.style.position = 'absolute';
+                emoji.style.left = e.clientX + 'px';
+                emoji.style.top = e.clientY + 'px';
+                emoji.style.fontSize = Math.random() * 20 + 20 + 'px';
+                emoji.style.pointerEvents = 'none';
+                emoji.style.transition = 'all ' + (Math.random() * 2 + 1) + 's cubic-bezier(0.1, 0.5, 0.5, 1)';
+                
+                emojiContainer.appendChild(emoji);
+
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 200 + 100;
+                const x = Math.cos(angle) * distance;
+                const y = Math.sin(angle) * distance - 200;
+
+                setTimeout(() => {
+                    emoji.style.transform = `translate(${x}px, ${y}px) rotate(${Math.random() * 360}deg)`;
+                    emoji.style.opacity = '0';
+                }, 10);
+
+                setTimeout(() => {
+                    emoji.remove();
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+
+</html>
